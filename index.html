@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AkroSPOT — Space Planner v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;900&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--pri:#0d5a8e;--prl:#1a7ab5;--prd:#07405f;--acc:#e63232;--acl:#ff5252;--bg:#eaf0f5;--bgd:#d8e2ea;--tx:#14253a;--txl:#6a7d90;--bd:#c0cdd8;--sh:rgba(13,90,142,0.12)}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);overflow:hidden;height:100vh}button{font-family:inherit}
+.H{background:linear-gradient(135deg,var(--prd),var(--pri));padding:7px 14px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 14px var(--sh);z-index:100;position:relative}
+.HL{display:flex;align-items:center;gap:9px}.LB{width:36px;height:36px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font:900 9px/1.1 'Barlow Condensed',sans-serif;color:var(--pri);text-align:center;letter-spacing:.4px}.LB .d{color:var(--acc)}
+.HT{color:#fff;font:800 16px/1 'Barlow Condensed',sans-serif;letter-spacing:2px}.HS{color:rgba(255,255,255,.5);font-size:9px}
+.mb{padding:4px 11px;border-radius:4px;border:none;cursor:pointer;font-size:10px;font-weight:700;color:#fff;background:rgba(255,255,255,.12);transition:all .2s}.mb.a{background:var(--acc)}.mb:hover{background:rgba(255,255,255,.25)}.mb.a:hover{background:var(--acl)}
+.B{display:flex;height:calc(100vh - 50px)}
+.S{width:220px;background:#fff;overflow-y:auto;padding:9px;border-right:1px solid var(--bd);flex-shrink:0;font-size:11px}
+.SR{width:200px;background:#fff;overflow-y:auto;padding:9px;border-left:1px solid var(--bd);flex-shrink:0;font-size:11px}
+.st{font:700 9px/1 'Barlow Condensed',sans-serif;color:var(--pri);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px}
+input[type=number],input[type=text],input[type=date]{width:100%;padding:3px 5px;border:1px solid var(--bd);border-radius:3px;font:11px 'Barlow',sans-serif;outline:none}input:focus{border-color:var(--pri)}
+.ci{display:flex;align-items:center;gap:6px;padding:4px 7px;border:1px solid var(--bd);border-radius:4px;cursor:pointer;background:var(--bg);font-size:10px;transition:all .12s;margin-bottom:2px}
+.ci:hover{background:var(--prl);color:#fff;border-color:var(--prl)}.ci:hover .cd{color:rgba(255,255,255,.7)}
+.cic{width:18px;height:18px;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;flex-shrink:0}
+.cn{font-weight:600;font-size:10px}.cd{font-size:8px;color:var(--txl)}
+.sp{display:flex;align-items:center;justify-content:space-between;padding:3px 6px;margin-top:2px;border-radius:3px;font-size:9px;font-weight:600}
+.sp button{background:none;border:none;cursor:pointer;color:var(--acc);font-size:13px}
+.dt{width:18px;height:18px;border-radius:3px;cursor:pointer;border:2px solid transparent;display:inline-block}.dt.a{border-color:#222}
+.bp{width:100%;padding:5px;background:var(--pri);color:#fff;border:none;border-radius:3px;cursor:pointer;font-size:10px;font-weight:700}.bp:hover{background:var(--prl)}
+.ba{width:100%;padding:5px;background:var(--acc);color:#fff;border:none;border-radius:3px;cursor:pointer;font-size:10px;font-weight:700}.ba:hover{background:var(--acl)}
+.bs{flex:1;padding:3px;color:#fff;border:none;border-radius:3px;cursor:pointer;font-size:9px;font-weight:600;font-family:inherit}
+.pb{background:var(--bg);border-radius:5px;padding:7px}.pb label{font-size:8px;color:var(--txl);display:block;margin-bottom:1px}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:4px}
+.ir{display:flex;align-items:center;justify-content:space-between;padding:3px 6px;margin-bottom:2px;border-radius:3px;cursor:pointer;font-size:9px;transition:all .1s}
+.ir:hover{background:rgba(13,90,142,.07)}.ir.s{background:rgba(13,90,142,.1)}.ir button{background:none;border:none;cursor:pointer;color:var(--acc);font-size:12px;padding:1px}
+.CW{flex:1;overflow:auto;padding:10px;background:var(--bgd)}
+.CI{position:relative;background:#fff;border:2px solid var(--pri);border-radius:3px;box-shadow:0 5px 28px var(--sh);transform-origin:top left;overflow:visible}
+.CI svg{position:absolute;top:0;left:0;overflow:visible}
+.S::-webkit-scrollbar,.SR::-webkit-scrollbar{width:4px}.S::-webkit-scrollbar-thumb,.SR::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+input[type=range]{-webkit-appearance:none;width:100%;height:3px;background:var(--bd);border-radius:2px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--pri);cursor:pointer}
+.ck{font-size:9px;display:flex;align-items:center;gap:3px;cursor:pointer}
+.fr{display:flex;gap:4px;align-items:center;font-size:10px}
+.m2{margin-bottom:2px}.m4{margin-bottom:4px}.m6{margin-bottom:6px}.m8{margin-bottom:8px}.m10{margin-bottom:10px}
+.eh{font-size:9px;color:var(--txl);text-align:center;padding:8px}
+.di{font-size:8px;color:var(--txl);background:var(--bg);padding:3px 5px;border-radius:3px;margin-bottom:6px;line-height:1.35}
+</style>
+</head>
+<body>
+<div class="H">
+  <div class="HL">
+    <div class="LB">AKRO<br><span class="d">SP●T</span></div>
+    <div><div class="HT">SPACE PLANNER</div><div class="HS">50.55m × 14.38m · 727 m² brutto · 14 słupów · Blok sanitarny</div></div>
+  </div>
+  <div style="display:flex;gap:4px">
+    <button class="mb a" data-mode="training" onclick="setMode('training')">🤸 Treningi</button>
+    <button class="mb" data-mode="event" onclick="setMode('event')">🎉 Eventy</button>
+    <button class="mb" data-mode="all" onclick="setMode('all')">📦 Wszystko</button>
+  </div>
+</div>
+<div class="B">
+<div class="S" id="LS">
+  <div class="m10">
+    <div class="st">📐 Hala — parametry</div>
+    <div class="di">
+      <b>Długość:</b> 50.55m (oś podłużna)<br>
+      <b>Szerokość:</b> 14.38m netto (1455 osiowo)<br>
+      <b>Pow. brutto:</b> 726.9 m²<br>
+      <b>Pow. netto:</b> ~722 m² (minus słupy)<br>
+      <b>Słupy:</b> 7×2=14 szt, 54×65cm<br>
+      <b>Moduł:</b> 575+65=640cm<br>
+      <b>Ściana zach. (dół):</b> brama + 3 wejścia<br>
+      <b>Ściana wsch. (góra):</b> blok sanitarny<br>
+      <b>Pom. tech.:</b> ~250×250, śc. zachodnia
+    </div>
+  </div>
+  <div class="m10">
+    <div class="st">🔍 Zoom: <span id="zL">70</span>%</div>
+    <input type="range" min="20" max="200" step="5" value="70" id="zS" oninput="uZ()">
+    <label class="ck"><input type="checkbox" checked id="gC" onchange="R()">Siatka 1m</label>
+    <label class="ck"><input type="checkbox" checked id="sC" onchange="R()">Konstrukcja i ściany</label>
+    <label class="ck"><input type="checkbox" checked id="dC" onchange="R()">Wymiarowanie</label>
+    <label class="ck"><input type="checkbox" id="lC" onchange="R()">Etykiety modułów</label>
+  </div>
+  <div class="m10">
+    <div class="st" id="cT">🤸 Sprzęt</div>
+    <div id="cL"></div>
+  </div>
+  <div class="m10">
+    <div class="st">📌 Sekcje zajęć</div>
+    <input type="text" id="sN" placeholder="Nazwa sekcji..." class="m4">
+    <div style="display:flex;gap:2px;flex-wrap:wrap" class="m4" id="sCs"></div>
+    <button class="bp m4" onclick="aS()">+ Dodaj sekcję</button>
+    <div id="sL"></div>
+  </div>
+</div>
+<div class="CW" id="CW"><div class="CI" id="CI"><svg id="mS"></svg></div></div>
+<div class="SR">
+  <div class="m10">
+    <div class="st">📄 Eksport z logo</div>
+    <input type="text" id="eN" placeholder="Nazwa wydarzenia..." class="m4">
+    <input type="date" id="eD" class="m6">
+    <button class="bp m4" onclick="xSVG()">⬇ Eksport SVG</button>
+    <button class="ba" onclick="xPNG()">⬇ Eksport PNG</button>
+  </div>
+  <div id="pP"></div>
+  <div><div class="st">📋 Elementy (<span id="iC">0</span>)</div><div id="iL"></div></div>
+</div>
+</div>
+<script>
+// ============================================================
+//  HALL DEFINITION — all values in cm, from JSON specification
+// ============================================================
+const HL = 5055;  // length (podłużna)
+const HW = 1438;  // width netto (poprzeczna: 233+54+854+54+243)
+
+// Coordinate system for rendering:
+// X = length axis (0=north wall, 5055=south wall) → horizontal on screen
+// Y = width axis (0=east wall, 1438=west wall) → vertical on screen
+// East wall (top) = sanitary side
+// West wall (bottom) = gate/doors side
+
+// PILLARS: 54cm across width × 65cm along length
+const PIL_W = 54; // across (Y direction)
+const PIL_L = 65; // along (X direction)
+// X positions (along length, from north):
+const PIL_X = [578, 1218, 1858, 2498, 3138, 3778, 4418];
+// Y positions (across width, from east wall):
+// Row 1 (near east): gap 243 from east wall → y = HW - 243 - PIL_W? 
+// No: from east (top, y=0): 243 gap, then pillar
+// Width decomposition from EAST: 243 | pillar 54 | 854 | pillar 54 | 233
+const PIL_Y = [243, 243 + PIL_W + 854]; // = [243, 1151]
+
+// WALLS
+const WALL_THICK = 20; // visual wall thickness
+
+// SANITARY BLOCK — at east wall (top, y=0), centered in length
+const SAN = {
+  width_across: 520, // total depth into hall (195+walls+292 ≈ 520)
+  length_along: 1135, // total along length (12+319+12+212+25+212+12+319+12)
+  // Internal breakdown of width (from east/top):
+  // Right part (kabiny WC) = 292, Left part (umywalki) = 195
+  internal_right: 292, // kabiny WC (closer to east wall)
+  internal_left: 195,  // umywalki (closer to hall center)
+  wall_thick: 12,
+  mid_wall: 25,
+  // Length breakdown: [12, 319, 12, 212, 25, 212, 12, 319, 12]
+  length_segments: [
+    {v:12, t:"ściana"}, {v:319, t:"Łazienka górna"}, {v:12, t:"ściana"},
+    {v:212, t:"Śluza/korytarz"}, {v:25, t:"ściana śr."},
+    {v:212, t:"Śluza/korytarz"}, {v:12, t:"ściana"},
+    {v:319, t:"Łazienka dolna"}, {v:12, t:"ściana"}
+  ]
+};
+// Centered along length
+SAN.x = Math.round((HL - SAN.length_along) / 2); // ~1960
+SAN.y = 0; // attached to east wall (top)
+
+// GATE — west wall (bottom), in first module area
+const GATE = {x: 50, y: HW, w: 300, label: "BRAMA"};
+
+// DOORS — 3 double doors on west wall (bottom)
+const DOORS = [
+  {x: 1800, y: HW},
+  {x: 2900, y: HW},
+  {x: 4000, y: HW}
+];
+const DOOR_W = 180; // double door width
+
+// TECHNICAL ROOM — west wall, ~module 4, ~250×250
+const TECH = {x: 1850, y: HW - 280, w: 280, h: 280, label: "Pom. tech."};
+
+// PILASTERS on west wall (bottom) — every module
+const PILASTERS_X = []; 
+for(let i=0; i<10; i++) PILASTERS_X.push(i * 550 + 100);
+
+// ============================================================
+// RENDERING SCALE
+const SC = 0.22; // px per cm base
+let zoom = 0.7;
+const PW = Math.round(HL * SC);
+const PH = Math.round(HW * SC);
+
+// ============================================================
+// EQUIPMENT CATALOG (all dimensions in cm)
+const CAT = [
+  {id:"trampoline",name:"Trampolina",w:300,h:500,color:"#2196F3",icon:"◎",cat:"training"},
+  {id:"trampoline_sm",name:"Trampolina mała",w:200,h:300,color:"#42A5F5",icon:"◎",cat:"training"},
+  {id:"foam_pit",name:"Basen z pianką",w:400,h:600,color:"#9C27B0",icon:"▦",cat:"training"},
+  {id:"mat_large",name:"Materac duży",w:300,h:400,color:"#4CAF50",icon:"▬",cat:"training"},
+  {id:"mat_small",name:"Materac mały",w:200,h:200,color:"#8BC34A",icon:"▪",cat:"training"},
+  {id:"mat_landing",name:"Mat zeskokowy",w:300,h:300,color:"#66BB6A",icon:"▤",cat:"training"},
+  {id:"spring_floor",name:"Podłoga sprężynowa",w:600,h:600,color:"#FF9800",icon:"⊞",cat:"training"},
+  {id:"tumble_track",name:"Ścieżka akro",w:200,h:1000,color:"#00BCD4",icon:"═",cat:"training"},
+  {id:"air_track",name:"Air Track",w:200,h:800,color:"#03A9F4",icon:"≡",cat:"training"},
+  {id:"bar_gym",name:"Drążek",w:200,h:200,color:"#795548",icon:"┬",cat:"training"},
+  {id:"rings",name:"Kółka gimnast.",w:200,h:200,color:"#607D8B",icon:"⊚",cat:"training"},
+  {id:"beam",name:"Równoważnia",w:100,h:500,color:"#8D6E63",icon:"─",cat:"training"},
+  {id:"table_round",name:"Stół okrągły ⌀160",w:160,h:160,color:"#78909C",icon:"●",cat:"event"},
+  {id:"table_rect",name:"Stół prostok.",w:180,h:80,color:"#78909C",icon:"▭",cat:"event"},
+  {id:"table_banquet",name:"Stół bankiet.",w:240,h:80,color:"#78909C",icon:"▭",cat:"event"},
+  {id:"chair_row",name:"Rząd krzeseł (10)",w:500,h:50,color:"#90A4AE",icon:"⌐",cat:"event"},
+  {id:"stage",name:"Scena",w:600,h:400,color:"#E91E63",icon:"▣",cat:"event"},
+  {id:"dj_booth",name:"Stanowisko DJ",w:200,h:150,color:"#673AB7",icon:"♫",cat:"event"},
+  {id:"bar_counter",name:"Bar / Bufet",w:400,h:80,color:"#FF5722",icon:"▬",cat:"event"},
+  {id:"dance_floor",name:"Parkiet taneczny",w:600,h:600,color:"#FF7043",icon:"♦",cat:"event"},
+  {id:"zone",name:"Strefa / Sekcja",w:600,h:400,color:"rgba(13,90,142,0.18)",icon:"□",cat:"all",isZone:true},
+  {id:"custom",name:"Element własny",w:200,h:200,color:"#546E7A",icon:"✦",cat:"all"},
+];
+const SNAP = 50;
+const SC_COL=["#0d5a8e","#e63232","#4CAF50","#FF9800","#9C27B0","#795548","#E91E63","#00BCD4"];
+let mode="training", items=[], secs=[], sel=null;
+let drg=null, rsz=null, dOff={x:0,y:0}, sCol=SC_COL[0];
+
+function uid(){return Math.random().toString(36).slice(2,9)}
+function sn(v){return Math.round(v/SNAP)*SNAP}
+
+function setMode(m){mode=m;document.querySelectorAll('.mb[data-mode]').forEach(b=>b.classList.toggle('a',b.dataset.mode===m));document.getElementById('cT').textContent=m==='training'?'🤸 Sprzęt':m==='event'?'🎉 Wyposażenie':'📦 Katalog';rCat()}
+
+function rCat(){
+  const el=document.getElementById('cL');
+  const f=CAT.filter(c=>mode==='all'||c.cat===mode||c.cat==='all');
+  el.innerHTML=f.map(c=>`<div class="ci" onclick="aI('${c.id}')"><div class="cic" style="background:${c.color}">${c.icon}</div><div><div class="cn">${c.name}</div><div class="cd">${(c.w/100).toFixed(1)}×${(c.h/100).toFixed(1)}m</div></div></div>`).join('');
+}
+
+function aI(cid){
+  const c=CAT.find(x=>x.id===cid);if(!c)return;
+  // Place in usable area (between pillar rows, away from sanitary)
+  const it={id:uid(),cid:c.id,name:c.name,x:800,y:400,w:c.w,h:c.h,color:c.color,icon:c.icon,isZone:!!c.isZone,label:c.isZone?'Strefa':''};
+  items.push(it);sel=it.id;R();
+}
+function iSC(){document.getElementById('sCs').innerHTML=SC_COL.map(c=>`<div class="dt ${sCol===c?'a':''}" style="background:${c}" onclick="sCol='${c}';iSC()"></div>`).join('')}
+function aS(){const n=document.getElementById('sN').value.trim();if(!n)return;secs.push({id:uid(),name:n,x:600,y:350,w:800,h:500,color:sCol});document.getElementById('sN').value='';R();rSL()}
+function dS(id){secs=secs.filter(s=>s.id!==id);R();rSL()}
+function rSL(){document.getElementById('sL').innerHTML=secs.map(s=>`<div class="sp" style="background:${s.color}18;border-left:3px solid ${s.color}"><span>${s.name}</span><button onclick="dS('${s.id}')">×</button></div>`).join('')}
+function dI(id){items=items.filter(i=>i.id!==id);if(sel===id)sel=null;R()}
+function uP(id,k,v){const it=items.find(i=>i.id===id);if(it)it[k]=v;R()}
+function roI(id){const it=items.find(i=>i.id===id);if(!it)return;const t=it.w;it.w=it.h;it.h=t;R()}
+function duI(id){const it=items.find(i=>i.id===id);if(!it)return;const n={...it,id:uid(),x:it.x+100,y:it.y+100};items.push(n);sel=n.id;R()}
+function uZ(){zoom=+document.getElementById('zS').value/100;document.getElementById('zL').textContent=Math.round(zoom*100);R()}
+
+// DRAG & RESIZE
+function gP(e){const r=document.getElementById('CI').getBoundingClientRect();return{x:(e.clientX-r.left)/(zoom*SC),y:(e.clientY-r.top)/(zoom*SC)}}
+function sD(e,id,tp){e.stopPropagation();e.preventDefault();const p=gP(e);const a=tp==='i'?items:secs;const o=a.find(i=>i.id===id);if(!o)return;dOff={x:p.x-o.x,y:p.y-o.y};drg={id,tp};sel=id;R()}
+function sR(e,id,tp){e.stopPropagation();e.preventDefault();rsz={id,tp};sel=id;R()}
+document.addEventListener('mousemove',e=>{
+  if(!drg&&!rsz)return;const p=gP(e);
+  if(drg){const a=drg.tp==='i'?items:secs;const o=a.find(i=>i.id===drg.id);if(!o)return;o.x=Math.max(0,Math.min(sn(p.x-dOff.x),HL-o.w));o.y=Math.max(0,Math.min(sn(p.y-dOff.y),HW-o.h));R()}
+  if(rsz){const a=rsz.tp==='i'?items:secs;const o=a.find(i=>i.id===rsz.id);if(!o)return;o.w=sn(Math.max(50,p.x-o.x));o.h=sn(Math.max(50,p.y-o.y));R()}
+});
+document.addEventListener('mouseup',()=>{drg=null;rsz=null});
+document.getElementById('CI').addEventListener('mousedown',e=>{if(e.target===document.getElementById('mS')||e.target===document.getElementById('CI')){sel=null;R()}});
+
+// ============================================================
+// RENDER
+// ============================================================
+function R(){
+  const z=zoom, s=SC;
+  const ci=document.getElementById('CI');
+  ci.style.width=PW*z+'px';ci.style.height=PH*z+'px';
+  const svg=document.getElementById('mS');
+  svg.setAttribute('width',PW*z);svg.setAttribute('height',PH*z);
+  svg.style.overflow='visible';
+
+  const grd=document.getElementById('gC').checked;
+  const str=document.getElementById('sC').checked;
+  const dim=document.getElementById('dC').checked;
+  const lbl=document.getElementById('lC').checked;
+
+  let h=`<g transform="scale(${z})"><g transform="scale(${s})">`;
+  // BG
+  h+=`<rect x="0" y="0" width="${HL}" height="${HW}" fill="#fafcfe"/>`;
+
+  // GRID 1m
+  if(grd){
+    for(let x=0;x<=HL;x+=100){const hv=x%500===0;h+=`<line x1="${x}" y1="0" x2="${x}" y2="${HW}" stroke="${hv?'rgba(13,90,142,0.18)':'rgba(13,90,142,0.05)'}" stroke-width="${hv?2.5:0.8}"/>`}
+    for(let y=0;y<=HW;y+=100){const hv=y%500===0;h+=`<line x1="0" y1="${y}" x2="${HL}" y2="${y}" stroke="${hv?'rgba(13,90,142,0.18)':'rgba(13,90,142,0.05)'}" stroke-width="${hv?2.5:0.8}"/>`}
+    for(let x=0;x<=HL;x+=500) h+=`<text x="${x+6}" y="${HW-8}" font-size="24" fill="#94aab8" font-family="Barlow,sans-serif" font-weight="600">${x/100}</text>`;
+    for(let y=0;y<=HW;y+=500) h+=`<text x="6" y="${y+24}" font-size="24" fill="#94aab8" font-family="Barlow,sans-serif" font-weight="600">${y/100}</text>`;
+  }
+
+  if(str){
+    // WALLS
+    h+=`<rect x="0" y="0" width="${HL}" height="${HW}" fill="none" stroke="#37474F" stroke-width="7"/>`;
+
+    // PILASTERS on west wall (bottom, y=HW)
+    for(let i=0;i<8;i++){
+      const px=i*640+300;
+      h+=`<rect x="${px}" y="${HW}" width="50" height="30" fill="#90A4AE" stroke="#546E7A" stroke-width="1.5"/>`;
+    }
+    // PILASTERS on east wall (top, y=0)  
+    for(let i=0;i<11;i++){
+      const px=i*480+100;
+      h+=`<rect x="${px}" y="${-30}" width="50" height="30" fill="#90A4AE" stroke="#546E7A" stroke-width="1.5"/>`;
+    }
+
+    // PILLARS (14 total: 7 columns × 2 rows)
+    PIL_X.forEach(px=>{
+      PIL_Y.forEach(py=>{
+        h+=`<rect x="${px}" y="${py}" width="${PIL_L}" height="${PIL_W}" fill="#90A4AE" stroke="#546E7A" stroke-width="2"/>`;
+        // Cross-hatching
+        h+=`<line x1="${px}" y1="${py}" x2="${px+PIL_L}" y2="${py+PIL_W}" stroke="#546E7A" stroke-width="1"/>`;
+        h+=`<line x1="${px+PIL_L}" y1="${py}" x2="${px}" y2="${py+PIL_W}" stroke="#546E7A" stroke-width="1"/>`;
+      });
+    });
+
+    // SANITARY BLOCK
+    const sx=SAN.x, sy=SAN.y, sw=SAN.length_along, sh=SAN.width_across;
+    h+=`<rect x="${sx}" y="${sy}" width="${sw}" height="${sh}" fill="#dce8f0" stroke="#455A64" stroke-width="4"/>`;
+    // Length divisions (along X)
+    let cx=sx;
+    SAN.length_segments.forEach((seg,i)=>{
+      if(seg.t.startsWith('ściana')){
+        h+=`<rect x="${cx}" y="${sy}" width="${seg.v}" height="${sh}" fill="#B0BEC5" stroke="none"/>`;
+      } else {
+        // Room label
+        h+=`<text x="${cx+seg.v/2}" y="${sy+sh/2+6}" font-size="20" text-anchor="middle" fill="#37474F" font-family="Barlow,sans-serif" font-weight="600" style="pointer-events:none">${seg.t}</text>`;
+        h+=`<text x="${cx+seg.v/2}" y="${sy+sh/2+24}" font-size="14" text-anchor="middle" fill="#6a7d90" font-family="Barlow,sans-serif" style="pointer-events:none">${(seg.v/100).toFixed(1)}m</text>`;
+      }
+      if(i>0 && i<SAN.length_segments.length) h+=`<line x1="${cx}" y1="${sy}" x2="${cx}" y2="${sy+sh}" stroke="#546E7A" stroke-width="${seg.t.includes('śr.')?3:1.5}"/>`;
+      cx+=seg.v;
+    });
+    // Width division: east side = kabiny WC (292), west side = umywalki (195)
+    // Divider line at y = sy + wall + 292
+    const divY = sy + SAN.wall_thick + SAN.internal_right;
+    h+=`<line x1="${sx}" y1="${divY}" x2="${sx+sw}" y2="${divY}" stroke="#546E7A" stroke-width="2"/>`;
+    h+=`<text x="${sx+sw/2}" y="${sy+SAN.wall_thick+SAN.internal_right/2+6}" font-size="16" text-anchor="middle" fill="#455A64" font-family="Barlow,sans-serif" style="pointer-events:none">Kabiny WC</text>`;
+    h+=`<text x="${sx+sw/2}" y="${divY+(sh-divY)/2+6}" font-size="16" text-anchor="middle" fill="#455A64" font-family="Barlow,sans-serif" style="pointer-events:none">Umywalki / śluzy</text>`;
+
+    // WC symbols in upper/lower bathroom sections
+    [SAN.x + 12, SAN.x + 12 + 319 + 12 + 212 + 25 + 212 + 12].forEach(bx=>{
+      // 3 WC ovals in each bathroom
+      for(let k=0;k<3;k++){
+        const ox = bx + 40 + k * 95;
+        const oy = sy + SAN.wall_thick + 40;
+        h+=`<ellipse cx="${ox+20}" cy="${oy+15}" rx="18" ry="13" fill="none" stroke="#78909C" stroke-width="1.5"/>`;
+      }
+    });
+
+    // GATE (bottom-left, west wall)
+    h+=`<rect x="${GATE.x}" y="${HW-6}" width="${GATE.w}" height="6" fill="#FF9800" opacity="0.85"/>`;
+    h+=`<text x="${GATE.x+GATE.w/2}" y="${HW-18}" font-size="24" text-anchor="middle" fill="#E65100" font-family="Barlow Condensed,sans-serif" font-weight="700">${GATE.label}</text>`;
+    // Gate opening arrows
+    h+=`<line x1="${GATE.x}" y1="${HW}" x2="${GATE.x}" y2="${HW-80}" stroke="#E65100" stroke-width="1.5" stroke-dasharray="6,3"/>`;
+    h+=`<line x1="${GATE.x+GATE.w}" y1="${HW}" x2="${GATE.x+GATE.w}" y2="${HW-80}" stroke="#E65100" stroke-width="1.5" stroke-dasharray="6,3"/>`;
+
+    // DOORS (3 double doors on west/bottom wall)
+    DOORS.forEach(d=>{
+      h+=`<rect x="${d.x}" y="${HW-5}" width="${DOOR_W}" height="5" fill="#43A047" opacity="0.85"/>`;
+      // Door swing arcs (quarter circles opening inward)
+      h+=`<path d="M${d.x},${HW} A${DOOR_W/2},${DOOR_W/2} 0 0,1 ${d.x+DOOR_W/2},${HW-DOOR_W/2}" fill="none" stroke="#43A047" stroke-width="1.5" stroke-dasharray="5,3"/>`;
+      h+=`<path d="M${d.x+DOOR_W},${HW} A${DOOR_W/2},${DOOR_W/2} 0 0,0 ${d.x+DOOR_W/2},${HW-DOOR_W/2}" fill="none" stroke="#43A047" stroke-width="1.5" stroke-dasharray="5,3"/>`;
+      h+=`<text x="${d.x+DOOR_W/2}" y="${HW-DOOR_W/2-8}" font-size="16" text-anchor="middle" fill="#2E7D32" font-family="Barlow,sans-serif" font-weight="600" style="pointer-events:none">Drzwi 2×</text>`;
+    });
+
+    // TECHNICAL ROOM
+    h+=`<rect x="${TECH.x}" y="${TECH.y}" width="${TECH.w}" height="${TECH.h}" fill="#ECEFF1" stroke="#455A64" stroke-width="3"/>`;
+    h+=`<text x="${TECH.x+TECH.w/2}" y="${TECH.y+TECH.h/2+6}" font-size="18" text-anchor="middle" fill="#37474F" font-family="Barlow,sans-serif" font-weight="600" style="pointer-events:none">${TECH.label}</text>`;
+  }
+
+  // DIMENSION LINES
+  if(dim){
+    // Top: total length
+    h+=`<line x1="0" y1="${-50}" x2="${HL}" y2="${-50}" stroke="#0d5a8e" stroke-width="2"/><line x1="0" y1="${-60}" x2="0" y2="${-40}" stroke="#0d5a8e" stroke-width="1.5"/><line x1="${HL}" y1="${-60}" x2="${HL}" y2="${-40}" stroke="#0d5a8e" stroke-width="1.5"/>`;
+    h+=`<text x="${HL/2}" y="${-62}" font-size="28" text-anchor="middle" fill="#0d5a8e" font-family="Barlow Condensed,sans-serif" font-weight="700">50.55 m (5055 cm)</text>`;
+    // Left: total width
+    h+=`<line x1="${-50}" y1="0" x2="${-50}" y2="${HW}" stroke="#0d5a8e" stroke-width="2"/><line x1="${-60}" y1="0" x2="${-40}" y2="0" stroke="#0d5a8e" stroke-width="1.5"/><line x1="${-60}" y1="${HW}" x2="${-40}" y2="${HW}" stroke="#0d5a8e" stroke-width="1.5"/>`;
+    h+=`<text x="${-65}" y="${HW/2}" font-size="24" fill="#0d5a8e" font-family="Barlow Condensed,sans-serif" font-weight="700" transform="rotate(-90,${-65},${HW/2})">14.38 m</text>`;
+
+    // Width segments at bottom
+    const ws = [{v:243,l:"2.43"},{v:PIL_W,l:"słup"},{v:854,l:"8.54"},{v:PIL_W,l:"słup"},{v:233,l:"2.33"}];
+    let wy = HW+40, wx=0;
+    ws.forEach(seg=>{
+      h+=`<line x1="${100}" y1="${wy}" x2="${100}" y2="${wy}" stroke="#795548" stroke-width="1"/>`;
+      if(seg.l!=="słup") h+=`<text x="${100}" y="${wy+seg.v/2+5}" font-size="16" fill="#795548" font-family="Barlow,sans-serif" text-anchor="end" transform="rotate(-90,${100},${wy+seg.v/2})">${seg.l}m</text>`;
+    });
+
+    // Module labels along top
+    if(lbl){
+      let mx=0;
+      const mods=[578,65,575,65,575,65,575,65,575,65,575,65,575,65,572];
+      mods.forEach((m,i)=>{
+        if(i%2===0 && m>100){
+          h+=`<text x="${mx+m/2}" y="${-22}" font-size="16" text-anchor="middle" fill="#795548" font-family="Barlow,sans-serif">${(m/100).toFixed(2)}m</text>`;
+          h+=`<line x1="${mx}" y1="${-15}" x2="${mx+m}" y2="${-15}" stroke="#795548" stroke-width="1"/>`;
+          h+=`<line x1="${mx}" y1="${-20}" x2="${mx}" y2="${-10}" stroke="#795548" stroke-width="1"/>`;
+          h+=`<line x1="${mx+m}" y1="${-20}" x2="${mx+m}" y2="${-10}" stroke="#795548" stroke-width="1"/>`;
+        }
+        mx+=m;
+      });
+    }
+  }
+
+  // SECTIONS
+  secs.forEach(s=>{
+    h+=`<rect x="${s.x}" y="${s.y}" width="${s.w}" height="${s.h}" fill="${s.color}20" stroke="${s.color}" stroke-width="3.5" stroke-dasharray="14,7" rx="6" class="ds" data-id="${s.id}" style="cursor:move"/>`;
+    h+=`<text x="${s.x+10}" y="${s.y+30}" font-size="26" font-weight="bold" fill="${s.color}" font-family="Barlow,sans-serif" style="pointer-events:none">${s.name}</text>`;
+    h+=`<text x="${s.x+10}" y="${s.y+50}" font-size="16" fill="${s.color}" opacity="0.5" font-family="Barlow,sans-serif" style="pointer-events:none">${(s.w/100).toFixed(1)}×${(s.h/100).toFixed(1)}m</text>`;
+    h+=`<rect x="${s.x+s.w-20}" y="${s.y+s.h-20}" width="20" height="20" fill="${s.color}" rx="3" class="rs" data-id="${s.id}" style="cursor:nwse-resize"/>`;
+  });
+
+  // ITEMS
+  items.forEach(it=>{
+    const sl=sel===it.id, stk=sl?'#e63232':'rgba(0,0,0,0.12)', sw=sl?4:1.5;
+    if(it.isZone){
+      h+=`<rect x="${it.x}" y="${it.y}" width="${it.w}" height="${it.h}" fill="${it.color}" stroke="${stk}" stroke-width="${sw}" stroke-dasharray="10,5" rx="4" class="di" data-id="${it.id}" style="cursor:move"/>`;
+      h+=`<text x="${it.x+8}" y="${it.y+28}" font-size="24" fill="#0d5a8e" font-weight="bold" font-family="Barlow,sans-serif" style="pointer-events:none">${it.label||it.name}</text>`;
+    } else {
+      h+=`<rect x="${it.x}" y="${it.y}" width="${it.w}" height="${it.h}" fill="${it.color}" stroke="${stk}" stroke-width="${sw}" rx="5" opacity="0.92" class="di" data-id="${it.id}" style="cursor:move"/>`;
+      h+=`<text x="${it.x+it.w/2}" y="${it.y+it.h/2-6}" font-size="30" text-anchor="middle" fill="#fff" style="pointer-events:none">${it.icon}</text>`;
+      h+=`<text x="${it.x+it.w/2}" y="${it.y+it.h/2+18}" font-size="18" text-anchor="middle" fill="#fff" font-weight="bold" font-family="Barlow,sans-serif" style="pointer-events:none">${it.name}</text>`;
+      h+=`<text x="${it.x+it.w/2}" y="${it.y+it.h/2+36}" font-size="14" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Barlow,sans-serif" style="pointer-events:none">${(it.w/100).toFixed(1)}×${(it.h/100).toFixed(1)}m</text>`;
+    }
+    h+=`<rect x="${it.x+it.w-18}" y="${it.y+it.h-18}" width="18" height="18" fill="${sl?'#e63232':'rgba(0,0,0,0.18)'}" rx="3" class="ri" data-id="${it.id}" style="cursor:nwse-resize"/>`;
+  });
+
+  h+=`</g></g>`;
+  svg.innerHTML=h;
+
+  svg.querySelectorAll('.di').forEach(el=>el.addEventListener('mousedown',e=>sD(e,el.dataset.id,'i')));
+  svg.querySelectorAll('.ds').forEach(el=>el.addEventListener('mousedown',e=>sD(e,el.dataset.id,'s')));
+  svg.querySelectorAll('.ri').forEach(el=>el.addEventListener('mousedown',e=>sR(e,el.dataset.id,'i')));
+  svg.querySelectorAll('.rs').forEach(el=>el.addEventListener('mousedown',e=>sR(e,el.dataset.id,'s')));
+  rP();rIL();
+}
+
+function rP(){
+  const el=document.getElementById('pP');const it=items.find(i=>i.id===sel);
+  if(!it){el.innerHTML='';return;}
+  const wm=(it.w/100).toFixed(1),hm=(it.h/100).toFixed(1),xm=(it.x/100).toFixed(1),ym=(it.y/100).toFixed(1);
+  const ch=it.color.startsWith('rgba')?'#0d5a8e':it.color.slice(0,7);
+  el.innerHTML=`<div class="m10"><div class="st">⚙ Właściwości</div><div class="pb">
+    <div style="font-weight:700;font-size:11px;margin-bottom:5px">${it.name}</div>
+    ${it.isZone?`<div class="m4"><label>Etykieta:</label><input type="text" value="${it.label||''}" onchange="uP('${it.id}','label',this.value)"></div>`:''}
+    <div class="m4"><label>Nazwa:</label><input type="text" value="${it.name}" onchange="uP('${it.id}','name',this.value)"></div>
+    <div class="pg"><div><label>Szer (m):</label><input type="number" value="${wm}" min="0.5" step="0.5" onchange="uP('${it.id}','w',Math.max(50,+this.value*100))"></div>
+    <div><label>Dł (m):</label><input type="number" value="${hm}" min="0.5" step="0.5" onchange="uP('${it.id}','h',Math.max(50,+this.value*100))"></div></div>
+    <div class="pg"><div><label>X (m):</label><input type="number" value="${xm}" min="0" step="0.5" onchange="uP('${it.id}','x',Math.max(0,+this.value*100))"></div>
+    <div><label>Y (m):</label><input type="number" value="${ym}" min="0" step="0.5" onchange="uP('${it.id}','y',Math.max(0,+this.value*100))"></div></div>
+    <div class="m4"><label>Kolor:</label><input type="color" value="${ch}" style="width:100%;height:22px;border:none;cursor:pointer" onchange="uP('${it.id}','color',this.value)"></div>
+    <div style="display:flex;gap:3px"><button class="bs" style="background:var(--prl)" onclick="roI('${it.id}')">🔄</button><button class="bs" style="background:#4CAF50" onclick="duI('${it.id}')">📋</button><button class="bs" style="background:var(--acc)" onclick="dI('${it.id}')">🗑</button></div>
+  </div></div>`;
+}
+function rIL(){
+  document.getElementById('iC').textContent=items.length;const el=document.getElementById('iL');
+  if(!items.length){el.innerHTML='<div class="eh">Dodaj elementy z katalogu</div>';return;}
+  el.innerHTML=items.map(it=>`<div class="ir ${sel===it.id?'s':''}" onclick="sel='${it.id}';R()"><div style="border-left:2px solid ${it.color};padding-left:4px"><div style="font-weight:600">${it.name}</div><div style="font-size:7px;color:var(--txl)">${(it.w/100).toFixed(1)}×${(it.h/100).toFixed(1)}m · (${(it.x/100).toFixed(0)},${(it.y/100).toFixed(0)})</div></div><button onclick="event.stopPropagation();dI('${it.id}')">×</button></div>`).join('');
+}
+
+// EXPORT
+function bSVG(){
+  const pad=100;
+  let s=`<svg xmlns="http://www.w3.org/2000/svg" width="${HL+pad*2}" height="${HW+pad*2+100}" viewBox="${-pad} ${-pad} ${HL+pad*2} ${HW+pad*2+100}">`;
+  s+=`<rect x="${-pad}" y="${-pad}" width="${HL+pad*2}" height="${HW+pad*2+100}" fill="#fff"/>`;
+  s+=`<rect x="${-pad}" y="${-pad}" width="${HL+pad*2}" height="76" fill="#0d5a8e"/>`;
+  s+=`<text x="${-pad+16}" y="${-pad+48}" fill="#fff" font-family="Barlow Condensed,Arial,sans-serif" font-size="38" font-weight="900" letter-spacing="2">AKRO SP●T</text>`;
+  const en=document.getElementById('eN').value,ed=document.getElementById('eD').value;
+  if(en) s+=`<text x="${HL/2}" y="${-pad+48}" fill="#fff" font-family="Barlow,sans-serif" font-size="28" font-weight="600" text-anchor="middle">${en}</text>`;
+  if(ed) s+=`<text x="${HL+pad-16}" y="${-pad+48}" fill="rgba(255,255,255,0.5)" font-family="Barlow,sans-serif" font-size="20" text-anchor="end">${ed}</text>`;
+  // Hall + grid
+  s+=`<rect x="0" y="0" width="${HL}" height="${HW}" fill="#f7f9fb" stroke="#37474F" stroke-width="6"/>`;
+  for(let x=0;x<=HL;x+=100) s+=`<line x1="${x}" y1="0" x2="${x}" y2="${HW}" stroke="${x%500===0?'#c0cdd8':'#eef1f4'}" stroke-width="${x%500===0?1:0.3}"/>`;
+  for(let y=0;y<=HW;y+=100) s+=`<line x1="0" y1="${y}" x2="${HL}" y2="${y}" stroke="${y%500===0?'#c0cdd8':'#eef1f4'}" stroke-width="${y%500===0?1:0.3}"/>`;
+  // Pillars
+  PIL_X.forEach(px=>{PIL_Y.forEach(py=>{s+=`<rect x="${px}" y="${py}" width="${PIL_L}" height="${PIL_W}" fill="#B0BEC5" stroke="#546E7A" stroke-width="1.5"/>`;})});
+  // Sanitary
+  s+=`<rect x="${SAN.x}" y="${SAN.y}" width="${SAN.length_along}" height="${SAN.width_across}" fill="#dce8f0" stroke="#455A64" stroke-width="3"/>`;
+  let cx=SAN.x;SAN.length_segments.forEach((seg,i)=>{if(seg.t.startsWith('ściana'))s+=`<rect x="${cx}" y="${SAN.y}" width="${seg.v}" height="${SAN.width_across}" fill="#B0BEC5"/>`;else s+=`<text x="${cx+seg.v/2}" y="${SAN.y+SAN.width_across/2+5}" font-size="16" text-anchor="middle" fill="#37474F" font-family="Barlow,sans-serif" font-weight="600">${seg.t}</text>`;if(i>0)s+=`<line x1="${cx}" y1="${SAN.y}" x2="${cx}" y2="${SAN.y+SAN.width_across}" stroke="#546E7A" stroke-width="1"/>`;cx+=seg.v});
+  // Gate + doors
+  s+=`<rect x="${GATE.x}" y="${HW-5}" width="${GATE.w}" height="5" fill="#FF9800" opacity="0.8"/><text x="${GATE.x+GATE.w/2}" y="${HW-12}" font-size="20" text-anchor="middle" fill="#E65100" font-family="Barlow Condensed,sans-serif" font-weight="700">BRAMA</text>`;
+  DOORS.forEach(d=>{s+=`<rect x="${d.x}" y="${HW-4}" width="${DOOR_W}" height="4" fill="#43A047" opacity="0.8"/>`;});
+  s+=`<rect x="${TECH.x}" y="${TECH.y}" width="${TECH.w}" height="${TECH.h}" fill="#ECEFF1" stroke="#455A64" stroke-width="2"/><text x="${TECH.x+TECH.w/2}" y="${TECH.y+TECH.h/2+5}" font-size="14" text-anchor="middle" fill="#37474F" font-family="Barlow,sans-serif" font-weight="600">${TECH.label}</text>`;
+  // Dims
+  s+=`<text x="${HL/2}" y="${-20}" font-size="26" text-anchor="middle" fill="#0d5a8e" font-family="Barlow Condensed,sans-serif" font-weight="700">50.55 m</text>`;
+  s+=`<text x="${-40}" y="${HW/2}" font-size="22" fill="#0d5a8e" font-family="Barlow Condensed,sans-serif" font-weight="700" transform="rotate(-90,${-40},${HW/2})">14.38 m</text>`;
+  // Sections
+  secs.forEach(sc=>{s+=`<rect x="${sc.x}" y="${sc.y}" width="${sc.w}" height="${sc.h}" fill="${sc.color}20" stroke="${sc.color}" stroke-width="3" stroke-dasharray="12,6" rx="5"/><text x="${sc.x+8}" y="${sc.y+24}" fill="${sc.color}" font-family="Barlow,sans-serif" font-size="22" font-weight="bold">${sc.name}</text>`});
+  // Items
+  items.forEach(it=>{
+    if(it.isZone){s+=`<rect x="${it.x}" y="${it.y}" width="${it.w}" height="${it.h}" fill="${it.color}" stroke="#0d5a8e" stroke-width="1.5" stroke-dasharray="8,4" rx="3"/>`;if(it.label)s+=`<text x="${it.x+6}" y="${it.y+22}" fill="#0d5a8e" font-family="Barlow,sans-serif" font-size="20" font-weight="bold">${it.label}</text>`}
+    else{s+=`<rect x="${it.x}" y="${it.y}" width="${it.w}" height="${it.h}" fill="${it.color}" rx="4" opacity="0.9"/><text x="${it.x+it.w/2}" y="${it.y+it.h/2+5}" fill="#fff" font-family="Barlow,sans-serif" font-size="18" text-anchor="middle" font-weight="bold">${it.name}</text><text x="${it.x+it.w/2}" y="${it.y+it.h/2+22}" fill="rgba(255,255,255,0.5)" font-family="Barlow,sans-serif" font-size="13" text-anchor="middle">${(it.w/100).toFixed(1)}×${(it.h/100).toFixed(1)}m</text>`}
+  });
+  s+=`<text x="${HL/2}" y="${HW+60}" fill="#6a7d90" font-family="Barlow,sans-serif" font-size="20" text-anchor="middle">50.55m × 14.38m · 727 m² · AkroSPOT Space Plan</text></svg>`;
+  return s;
+}
+function xSVG(){const b=new Blob([bSVG()],{type:'image/svg+xml'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`AkroSPOT_${document.getElementById('eN').value||'plan'}.svg`;a.click()}
+function xPNG(){const svg=bSVG(),W=HL+200,H=HW+300;const c=document.createElement('canvas');c.width=W;c.height=H;const ctx=c.getContext('2d');const img=new Image();const b=new Blob([svg],{type:'image/svg+xml'});const u=URL.createObjectURL(b);img.onload=()=>{ctx.drawImage(img,0,0);const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download=`AkroSPOT_${document.getElementById('eN').value||'plan'}.png`;a.click();URL.revokeObjectURL(u)};img.src=u}
+
+iSC();rCat();R();
+</script>
+</body>
+</html>
